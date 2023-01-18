@@ -23,17 +23,11 @@ router.get("/basic", (req, res) => {
     const playerVal = parseInt(player);
     const hardBool = hard === "true";
 
-    const recommendation = getRecommendation(playerVal, dealerVal, hardBool);
+    const recommendation = getRecommendation(playerVal, dealerVal, hardBool) || {};
     return res.json({
         recommendation,
-        playerVal,
-        dealerVal,
-        hardBool
     });
 })
-
-
-app.listen(8080, () => { console.log('listening on 8080') });
 
 export default app;
 
