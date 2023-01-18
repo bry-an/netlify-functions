@@ -17,6 +17,6 @@ const summarizeHandVal = (hand) => {
 const groupedByScore = groupByProp('score', basicStrategy);
 
 export const getRecommendation = (player, dealer, hard) => {
-    const options = groupedByScore[player]
+    const options = groupedByScore[player] || [];
     return options.find((opt) => opt['score_dealer'] === dealer && opt.hard === hard) || ''
 }
