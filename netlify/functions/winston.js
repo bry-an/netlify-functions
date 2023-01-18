@@ -1,8 +1,11 @@
-const express = require("express")
-const serverless = require("serverless-http")
+import express from "express";
+
+import serverless from "serverless-http"
 const app = express()
-const bodyParser = require("body-parser")
+import bodyParser from "body-parser"
 const router = express.Router()
+
+import { getRecommendation } from './basic.js';
 
 app.use(bodyParser.json())
 app.use("/.netlify/functions/winston", router) // path must route to lambda
@@ -14,15 +17,24 @@ router.get("/", (req, res) => {
   res.end()
 })
 
-router.post("/mcdermott", async (req, res) => {
-  try {
-    // maybe do some database interaction or third-party API call here!
-    res.status(200).send({ data: "success" })
-  } catch (err) {
-    console.log(err)
-    res.status(400).send({ error: "bad request" })
-  }
+router.get("/basic", (req, res) => {
+    const { dealer = '', player = '', hard = true } = req.query;
+    const dealerVal = parseInt(dealer);
+    const playerVal = parseInt(player);
+    const hardBool = hard === "true";
+
+    const recommendation = getRecommendation(playerVal, dealerVal, hardBool);
+    return res.json({
+        recommendation,
+        playerVal,
+        dealerVal,
+        hardBool
+    });
 })
 
-module.exports = app
-module.exports.handler = serverless(app)
+
+app.listen(8080, () => { console.log('listening on 8080') });
+
+export default app;
+
+export const handler = serverless(app);
